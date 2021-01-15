@@ -20,8 +20,6 @@ export function Game({ firestore, firebase }) {
     // });
   };
 
-  console.log(state.get());
-
   return (
     <>
       <Link to="/rules">Rules</Link>
