@@ -1,12 +1,14 @@
 import React from "react";
 import "./styles.css";
+import { Rules } from "./Rules";
+import { Selection } from "./Selection";
+import { Game } from "./Game";
 
 import firebase from "firebase/app";
 import "firebase/firestore";
 import "firebase/auth";
 
-import { useAuthState } from "react-firebase-hooks/auth";
-import { useCollectionData } from "react-firebase-hooks/firestore";
+import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 
 if (!firebase.apps.length) {
   firebase.initializeApp({
@@ -23,26 +25,21 @@ if (!firebase.apps.length) {
 const firestore = firebase.firestore();
 
 export default function App() {
-  const cardsRef = firestore.collection("cards");
-  const query = cardsRef.orderBy("type").limit(25);
-  const [cards] = useCollectionData(query, { idField: "id" });
-
-  console.log(cards);
-
-  const handleOnclick = () => {
-    cardsRef.add({
-      leftWord: "test",
-      rightWord: "test",
-      type: "test",
-      createdAt: firebase.firestore.FieldValue.serverTimestamp()
-    });
-  };
-
   return (
-    <div className="App">
-      <h1>Hello CodeSandbox</h1>
-      <h2>Start editing to see some magic happen!</h2>
-      <button onClick={handleOnclick}>Click</button>
-    </div>
+    <Router>
+      <div className="App">
+        <Switch>
+          <Route path="/" exact>
+            <Selection />
+          </Route>
+          <Route path="/rules" exact>
+            <Rules />
+          </Route>
+          <Route path="/game" exact>
+            <Game firestore={firestore} firebase={firebase} />
+          </Route>
+        </Switch>
+      </div>
+    </Router>
   );
 }
